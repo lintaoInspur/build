@@ -16,8 +16,12 @@ jobs:
       - name: Install GCC-10
         run: |
           sudo apt-get install -y gcc-10 g++-10
-          echo "CC=gcc-10" >> $GITHUB_ENV
-          echo "CXX=g++-10" >> $GITHUB_ENV
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+          sudo update-alternatives --set gcc /usr/bin/gcc-10
+          sudo update-alternatives --set g++ /usr/bin/g++-10
+          gcc --version   # 现在应显示 10.x
+          g++ --version
       - name: Install dependencies
         run: |
           sudo apt-get update
