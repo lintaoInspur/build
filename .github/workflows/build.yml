@@ -1,4 +1,4 @@
-name: Build Panther-X2 SDK (Non-interactive)
+name: Build Panther-X2 SDK
 
 on:
   push:
@@ -11,33 +11,33 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      # 1️⃣ 拉取仓库
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ 安装依赖
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             build-essential git wget unzip cpio bc libncurses5-dev dialog
 
-      # 3️⃣ 编译 SDK（完全非交互）
+      - name: Setup QEMU for cross compilation
+        run: |
+          sudo apt-get install -y qemu-user-static binfmt-support
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
       - name: Compile Panther-X2 SDK (non-interactive)
         run: |
           chmod +x ./compile.sh
           export DEBIAN_FRONTEND=noninteractive
-          export DIALOG=disabled          # 强制禁用 dialog
-          export TTY_X=0                  # 模拟无终端
           ./compile.sh build \
             BOARD=panther-x2 \
             BRANCH=current \
             RELEASE=trixie \
             BUILD_DESKTOP=no \
             BUILD_MINIMAL=yes \
-            KERNEL_CONFIGURE=no
+            KERNEL_CONFIGURE=no \
+            USE_PREBUILT_UBOOT=yes
 
-      # 4️⃣ 上传构建产物
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
