@@ -27,16 +27,15 @@ jobs:
         run: |
           chmod +x ./compile.sh
           export DEBIAN_FRONTEND=noninteractive
-          # 使用 CLI 模式跳过所有 dialog
+          export DIALOG=disabled          # 强制禁用 dialog
+          export TTY_X=0                  # 模拟无终端
           ./compile.sh build \
             BOARD=panther-x2 \
+            BRANCH=current \
             RELEASE=trixie \
             BUILD_DESKTOP=no \
             BUILD_MINIMAL=yes \
-            KERNEL_CONFIGURE=no \
-            KERNEL_BRANCH=lts \
-            FORCE_BOARD=yes \
-            FORCE_MINIMAL=yes
+            KERNEL_CONFIGURE=no
 
       # 4️⃣ 上传构建产物
       - name: Upload build artifacts
