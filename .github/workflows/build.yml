@@ -1,0 +1,20 @@
+name: Build Panther-X2 Fixed
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Build Armbian
+        uses: armbian/actions@main
+        with:
+          board: "panther-x2"
+          release: "bookworm"   # Debian 12 最稳
+          build-minimal: "yes"
+          build-desktop: "no"
+          kernel: "vendor"      # 必须用 vendor
+          branch: "vendor"
+          upload-artifact: "yes"
