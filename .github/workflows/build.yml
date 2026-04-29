@@ -33,7 +33,9 @@ jobs:
             RELEASE=${{ env.RELEASE }} \
             BUILD_DESKTOP=${{ env.BUILD_DESKTOP }} \
             BUILD_MINIMAL=${{ env.BUILD_MINIMAL }} \
-            KERNEL_CONFIGURE=${{ env.KERNEL_CONFIGURE }}
+            KERNEL_CONFIGURE=${{ env.KERNEL_CONFIGURE }}\
+            FORCE_BOARD=yes \
+            FORCE_MINIMAL=yes
 
       - name: Archive build output
         uses: actions/upload-artifact@v4
