@@ -29,15 +29,16 @@ jobs:
         run: |
           chmod +x ./compile.sh
           export DEBIAN_FRONTEND=noninteractive
-          export U_BOOT_CFLAGS="$U_BOOT_CFLAGS -Wno-error=enum-int-mismatch"
+          # 关键修正：使用 UBOOT_MAKE_FLAGS 并通过 KCFLAGS 禁用 -Werror
+          export UBOOT_MAKE_FLAGS='KCFLAGS="-Wno-error"'
           ./compile.sh build \
             BOARD=panther-x2 \
             BRANCH=current \
             RELEASE=trixie \
             BUILD_DESKTOP=no \
             BUILD_MINIMAL=yes \
-            KERNEL_CONFIGURE=no \
-            USE_PREBUILT_UBOOT=yes
+            KERNEL_CONFIGURE=no
+          # 注意：移除了无效的 USE_PREBUILT_UBOOT=yes
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
