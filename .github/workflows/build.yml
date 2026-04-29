@@ -29,6 +29,7 @@ jobs:
         run: |
           chmod +x ./compile.sh
           export DEBIAN_FRONTEND=noninteractive
+          export U_BOOT_CFLAGS="$U_BOOT_CFLAGS -Wno-error=enum-int-mismatch"
           ./compile.sh build \
             BOARD=panther-x2 \
             BRANCH=current \
