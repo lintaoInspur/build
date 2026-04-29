@@ -1,5 +1,6 @@
 name: Build Panther-X2 SDK
 
+# 触发条件
 on:
   push:
     branches:
@@ -7,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-pantherx2:
     runs-on: ubuntu-22.04
     env:
       BOARD: panther-x2
@@ -15,29 +16,37 @@ jobs:
       BUILD_DESKTOP: no
       BUILD_MINIMAL: yes
       KERNEL_CONFIGURE: no
+      KERNEL_BRANCH: lts
+      FORCE_BOARD: yes
+      FORCE_MINIMAL: yes
 
     steps:
+      # 1️⃣ 拉取代码
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ 安装依赖
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential git wget unzip cpio bc libncurses5-dev
+          sudo apt-get install -y build-essential git wget unzip cpio bc libncurses5-dev dialog
 
-      - name: Run compile.sh
+      # 3️⃣ 编译 SDK
+      - name: Run compile.sh (non-interactive)
         run: |
           chmod +x ./compile.sh
+          export KERNEL_BRANCH=${{ env.KERNEL_BRANCH }}
+          export FORCE_BOARD=${{ env.FORCE_BOARD }}
+          export FORCE_MINIMAL=${{ env.FORCE_MINIMAL }}
           ./compile.sh \
             BOARD=${{ env.BOARD }} \
             RELEASE=${{ env.RELEASE }} \
             BUILD_DESKTOP=${{ env.BUILD_DESKTOP }} \
             BUILD_MINIMAL=${{ env.BUILD_MINIMAL }} \
-            KERNEL_CONFIGURE=${{ env.KERNEL_CONFIGURE }}\
-            FORCE_BOARD=yes \
-            FORCE_MINIMAL=yes
+            KERNEL_CONFIGURE=${{ env.KERNEL_CONFIGURE }}
 
-      - name: Archive build output
+      # 4️⃣ 上传构建产物
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: pantherx2-image
