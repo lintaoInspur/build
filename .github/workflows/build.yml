@@ -13,6 +13,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Set and Verify Cross Compiler
+        run: |
+          sudo apt-get install -y gcc-10-aarch64-linux-gnu g++-10-aarch64-linux-gnu
+          # 显式指定工具链路径，并直接覆盖CC/CXX
+          echo "CC=aarch64-linux-gnu-gcc-10" >> $GITHUB_ENV
+          echo "CXX=aarch64-linux-gnu-g++-10" >> $GITHUB_ENV
+          # 并明确设置编译器路径
+          aarch64-linux-gnu-gcc-10 --version
       - name: Install GCC-10
         run: |
           sudo apt-get install -y gcc-10 g++-10
@@ -38,6 +46,7 @@ jobs:
           chmod +x ./compile.sh
           gcc --version 
           g++ --version 
+          aarch64-linux-gnu-gcc-10 --version
           export DEBIAN_FRONTEND=noninteractive
           # 关键修正：使用 UBOOT_MAKE_FLAGS 并通过 KCFLAGS 禁用 -Werror
           export UBOOT_MAKE_FLAGS='KCFLAGS="-Wno-error"'
