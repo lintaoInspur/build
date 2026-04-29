@@ -33,7 +33,7 @@ jobs:
           export UBOOT_MAKE_FLAGS='KCFLAGS="-Wno-error"'
           ./compile.sh build \
             BOARD=panther-x2 \
-            BRANCH=current \
+            BRANCH=edge \
             RELEASE=trixie \
             BUILD_DESKTOP=no \
             BUILD_MINIMAL=yes \
