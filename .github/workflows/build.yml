@@ -30,6 +30,8 @@ jobs:
       - name: Compile Panther-X2 SDK (non-interactive)
         run: |
           chmod +x ./compile.sh
+          gcc --version 
+          g++ --version 
           export DEBIAN_FRONTEND=noninteractive
           # 关键修正：使用 UBOOT_MAKE_FLAGS 并通过 KCFLAGS 禁用 -Werror
           export UBOOT_MAKE_FLAGS='KCFLAGS="-Wno-error"'
