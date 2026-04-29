@@ -1,6 +1,5 @@
-name: Build Panther-X2 SDK
+name: Build Panther-X2 SDK (Non-interactive)
 
-# 触发条件
 on:
   push:
     branches:
@@ -10,18 +9,9 @@ on:
 jobs:
   build-pantherx2:
     runs-on: ubuntu-22.04
-    env:
-      BOARD: panther-x2
-      RELEASE: trixie
-      BUILD_DESKTOP: no
-      BUILD_MINIMAL: yes
-      KERNEL_CONFIGURE: no
-      KERNEL_BRANCH: lts
-      FORCE_BOARD: yes
-      FORCE_MINIMAL: yes
 
     steps:
-      # 1️⃣ 拉取代码
+      # 1️⃣ 拉取仓库
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -29,21 +19,24 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential git wget unzip cpio bc libncurses5-dev dialog
+          sudo apt-get install -y \
+            build-essential git wget unzip cpio bc libncurses5-dev dialog
 
-      # 3️⃣ 编译 SDK
-      - name: Run compile.sh (non-interactive)
+      # 3️⃣ 编译 SDK（完全非交互）
+      - name: Compile Panther-X2 SDK (non-interactive)
         run: |
           chmod +x ./compile.sh
-          export KERNEL_BRANCH=${{ env.KERNEL_BRANCH }}
-          export FORCE_BOARD=${{ env.FORCE_BOARD }}
-          export FORCE_MINIMAL=${{ env.FORCE_MINIMAL }}
-          ./compile.sh \
-            BOARD=${{ env.BOARD }} \
-            RELEASE=${{ env.RELEASE }} \
-            BUILD_DESKTOP=${{ env.BUILD_DESKTOP }} \
-            BUILD_MINIMAL=${{ env.BUILD_MINIMAL }} \
-            KERNEL_CONFIGURE=${{ env.KERNEL_CONFIGURE }}
+          export DEBIAN_FRONTEND=noninteractive
+          # 使用 CLI 模式跳过所有 dialog
+          ./compile.sh build \
+            BOARD=panther-x2 \
+            RELEASE=trixie \
+            BUILD_DESKTOP=no \
+            BUILD_MINIMAL=yes \
+            KERNEL_CONFIGURE=no \
+            KERNEL_BRANCH=lts \
+            FORCE_BOARD=yes \
+            FORCE_MINIMAL=yes
 
       # 4️⃣ 上传构建产物
       - name: Upload build artifacts
