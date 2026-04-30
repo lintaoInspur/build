@@ -191,6 +191,8 @@ function compile_uboot_target() {
 		"-Wno-error=misleading-indentation"   # patches have mismatching indentation
 		"-Wno-error=attributes"               # for very old-uboots
 		"-Wno-error=address-of-packed-member" # for very old-uboots
+		"-Wno-error=address"
+		"-Wno-error=enum-int-mismatch"
 	)
 	if linux-version compare "${gcc_version_main}" ge "11.0"; then
 		uboot_cflags_array+=(
